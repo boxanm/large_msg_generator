@@ -11,11 +11,13 @@ class LargeMsgGenerator : public rclcpp::Node {
 public:
 	LargeMsgGenerator():
 	Node("large_msg_generator_node") {
+		this->declare_parameter("num_points", 500*500);
+		const int num_points = this->get_parameter("num_points").get_parameter_value().get<int>();
 		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", 2);
 		ptcloud_ = sensor_msgs::msg::PointCloud2();
 		ptcloud_.header.frame_id = "map";
-		ptcloud_.height = 32;
-		ptcloud_.width = 1800;
+		ptcloud_.height = 1;
+		ptcloud_.width = num_points;
 		ptcloud_.is_bigendian = false;
 		ptcloud_.point_step = 20;
 		ptcloud_.row_step = 36000;
@@ -50,14 +52,13 @@ public:
 		point_fields.push_back(point_field);
 		ptcloud_.fields = point_fields;
 
-		RCLCPP_INFO(this->get_logger(), "Generation data");
+		RCLCPP_INFO(this->get_logger(), "Generation data with %d points", num_points);
 		union float_bytes {
 			float val;
 			std::uint8_t bytes[sizeof(float)];
 		} point;
 
 		const float radius = 10.0;
-		const int num_points = 57600;
 		std::vector<std::uint8_t> data;
 		float theta = 0;
 		float phi = -M_PI/2;
@@ -108,7 +109,7 @@ private:
 	void publishLargeMsg() {
 		ptcloud_.header.stamp = this->get_clock()->now();
 		path_publisher_->publish(ptcloud_);
-		RCLCPP_INFO(this->get_logger(), "Message published");
+		RCLCPP_INFO(this->get_logger(), "Message published with time: %d.%d", ptcloud_.header.stamp.sec, ptcloud_.header.stamp.nanosec);
 	}
 };
 

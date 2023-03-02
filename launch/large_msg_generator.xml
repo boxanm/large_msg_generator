@@ -1,3 +1,5 @@
 <launch>
-    <node pkg="large_msg_generator" exec="large_msg_generator_node" name="large_msg_generator"/>
+    <node pkg="large_msg_generator" exec="large_msg_generator_node" name="large_msg_generator">
+        <param name="num_points" value="100000"/>
+    </node>
 </launch>
