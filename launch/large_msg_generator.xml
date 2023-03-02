@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="large_msg_generator" exec="large_msg_generator_node" name="large_msg_generator"/>
+</launch>
