@@ -7,22 +7,29 @@
 
 using namespace std::chrono_literals;
 
+template <typename T>
+union word_union {
+	T val;
+	std::uint8_t bytes[sizeof(T)];
+};
+
 class LargeMsgGenerator : public rclcpp::Node {
 public:
 	LargeMsgGenerator():
 	Node("large_msg_generator_node") {
 		this->declare_parameter("num_points", 500*500);
 		const int num_points = this->get_parameter("num_points").get_parameter_value().get<int>();
+		const int num_points_root = std::floor(std::sqrt(num_points));
 		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", 2);
 		ptcloud_ = sensor_msgs::msg::PointCloud2();
 		ptcloud_.header.frame_id = "map";
 		ptcloud_.height = 1;
-		ptcloud_.width = num_points;
+		ptcloud_.width = num_points_root*num_points_root;
 		ptcloud_.is_bigendian = false;
 		ptcloud_.point_step = 20;
 		ptcloud_.row_step = 36000;
 		ptcloud_.is_dense = false;
-// uint8 FLOAT32 = 7
+		// uint8 FLOAT32 = 7
 		auto point_fields = std::vector<sensor_msgs::msg::PointField>();
 		auto point_field = sensor_msgs::msg::PointField();
 		point_field.name = "x";
@@ -53,46 +60,28 @@ public:
 		ptcloud_.fields = point_fields;
 
 		RCLCPP_INFO(this->get_logger(), "Generation data with %d points", num_points);
-		union float_bytes {
-			float val;
-			std::uint8_t bytes[sizeof(float)];
-		} point;
 
 		const float radius = 10.0;
-		std::vector<std::uint8_t> data;
-		float theta = 0;
+		const float time = 0.0;
 		float phi = -M_PI/2;
-		for (int i = 0; i < std::sqrt(num_points); ++i) {
-			phi += M_PI/std::sqrt(num_points);
+		std::vector<std::uint8_t> data;
+		float theta;
+		for (int i = 0; i < num_points_root; ++i) {
+			phi += M_PI/num_points_root;
 			const float z = std::cos(phi) * radius;
+			const float intensity = z;
 			const float k = std::sin(phi) * radius;
 			theta = 0;
-			for (int j = 0; j < std::sqrt(num_points); ++j) {
-				theta += M_PI/std::sqrt(num_points);
+			for (int j = 0; j < num_points_root; ++j) {
+				theta += M_PI/num_points_root;
 				const float x = std::cos(theta) * k;
 				const float y = std::sin(theta) * k;
-				const float intensity = z;
 
-				point.val = x;
-				for (const std::uint8_t byte:point.bytes) {
-					data.push_back(byte);
-				}
-				point.val = y;
-				for (const std::uint8_t byte:point.bytes) {
-					data.push_back(byte);
-				}
-				point.val = z;
-				for (const std::uint8_t byte:point.bytes) {
-					data.push_back(byte);
-				}
-				point.val = intensity;
-				for (const std::uint8_t byte:point.bytes) {
-					data.push_back(byte);
-				}
-				point.val = 0.0;
-				for (const std::uint8_t byte:point.bytes) {
-					data.push_back(byte);
-				}
+				push_data(data, x);
+				push_data(data, y);
+				push_data(data, z);
+				push_data(data, intensity);
+				push_data(data, time);
 			}
 		}
 		ptcloud_.data = data;
@@ -110,6 +99,15 @@ private:
 		ptcloud_.header.stamp = this->get_clock()->now();
 		path_publisher_->publish(ptcloud_);
 		RCLCPP_INFO(this->get_logger(), "Message published with time: %d.%d", ptcloud_.header.stamp.sec, ptcloud_.header.stamp.nanosec);
+	}
+
+	template<typename T>
+	void push_data(std::vector<std::uint8_t> &data, T value) {
+		word_union<T> point{};
+		point.val = value;
+		for (const std::uint8_t byte:point.bytes) {
+			data.push_back(byte);
+		}
 	}
 };
 
