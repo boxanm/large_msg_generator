@@ -13,10 +13,10 @@ union word_union {
 	std::uint8_t bytes[sizeof(T)];
 };
 
-class LargeMsgGenerator : public rclcpp::Node {
+class LargeMsgGeneratorTalker : public rclcpp::Node {
 public:
-	LargeMsgGenerator():
-	Node("large_msg_generator_node") {
+	LargeMsgGeneratorTalker():
+	Node("large_msg_generator_talker") {
 		this->declare_parameter("num_points", 500*500);
 		const int num_points = this->get_parameter("num_points").get_parameter_value().get<int>();
 		const int num_points_root = std::floor(std::sqrt(num_points));
@@ -113,7 +113,7 @@ private:
 
 int main(int argc, char **argv) {
 	rclcpp::init(argc, argv);
-	rclcpp::spin(std::make_shared<LargeMsgGenerator>());
+	rclcpp::spin(std::make_shared<LargeMsgGeneratorTalker>());
 	rclcpp::shutdown();
 	return 0;
 }

@@ -18,14 +18,23 @@ include_directories(
 install(DIRECTORY launch
         DESTINATION share/${PROJECT_NAME})
 
-add_executable(large_msg_generator_node src/large_msg_generator_node.cpp)
-ament_target_dependencies(large_msg_generator_node
+add_executable(talker src/talker.cpp)
+ament_target_dependencies(talker
         rclcpp
         sensor_msgs
         )
-target_link_libraries(large_msg_generator_node "${cpp_typesupport_target}")
+
+
+add_executable(listener src/listener.cpp)
+ament_target_dependencies(listener
+        rclcpp
+        sensor_msgs
+        )
+
+target_link_libraries(talker "${cpp_typesupport_target}")
+
 ament_export_dependencies(rosidl_default_runtime)
-install(TARGETS large_msg_generator_node
+install(TARGETS talker listener
         DESTINATION lib/${PROJECT_NAME}
         )
 # uncomment the following section in order to fill in
