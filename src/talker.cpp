@@ -18,7 +18,10 @@ public:
 	LargeMsgGeneratorTalker():
 	Node("large_msg_generator_talker") {
 		this->declare_parameter("num_points", 500000);
+		this->declare_parameter("rate", 10);
 		const int num_points = this->get_parameter("num_points").get_parameter_value().get<int>();
+		const int rate = this->get_parameter("rate").get_parameter_value().get<int>();
+		const int timer_period = std::ceil(1/(1000*rate));
 		const int num_points_root = std::floor(std::sqrt(num_points));
 		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", 2);
 		ptcloud_ = sensor_msgs::msg::PointCloud2();
@@ -87,7 +90,8 @@ public:
 		ptcloud_.data = data;
 
 		RCLCPP_INFO(this->get_logger(), "Done");
-		timer_ = this->create_wall_timer(1000ms, [this] { publishLargeMsg(); });
+		RCLCPP_INFO(this->get_logger(), "Publishing data each %d ms", timer_period);
+		timer_ = this->create_wall_timer(std::chrono::milliseconds{timer_period}, [this] { publishLargeMsg(); });
 
 	}
 private:

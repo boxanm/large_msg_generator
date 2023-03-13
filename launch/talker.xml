@@ -1,6 +1,8 @@
 <launch>
     <arg name="num_points" default="500000"/>
+    <arg name="rate" default="10"/>
     <node pkg="large_msg_generator" exec="talker" name="talker">
         <param name="num_points" value="$(var num_points)"/>
+        <param name="rate" value="$(var rate)"/>
     </node>
 </launch>
