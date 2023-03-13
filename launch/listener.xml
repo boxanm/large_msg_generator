@@ -1,6 +1,3 @@
 <launch>
-    <arg name="num_points" default="100000"/>
-    <node pkg="large_msg_generator" exec="listener" name="listener">
-        <param name="num_points" value="$(var num_points)"/>
-    </node>
+    <node pkg="large_msg_generator" exec="listener" name="listener"/>
 </launch>

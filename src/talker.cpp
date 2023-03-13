@@ -17,7 +17,7 @@ class LargeMsgGeneratorTalker : public rclcpp::Node {
 public:
 	LargeMsgGeneratorTalker():
 	Node("large_msg_generator_talker") {
-		this->declare_parameter("num_points", 500*500);
+		this->declare_parameter("num_points", 500000);
 		const int num_points = this->get_parameter("num_points").get_parameter_value().get<int>();
 		const int num_points_root = std::floor(std::sqrt(num_points));
 		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", 2);
