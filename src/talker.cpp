@@ -21,7 +21,7 @@ public:
 		this->declare_parameter("rate", 10);
 		const int num_points = this->get_parameter("num_points").get_parameter_value().get<int>();
 		const int rate = this->get_parameter("rate").get_parameter_value().get<int>();
-		const int timer_period = std::ceil(1/(1000*rate));
+		const int timer_period = std::ceil(1000/rate);
 		const int num_points_root = std::floor(std::sqrt(num_points));
 		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", 2);
 		ptcloud_ = sensor_msgs::msg::PointCloud2();
