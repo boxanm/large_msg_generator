@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+
+    <publisher profile_name="ros2_publisher_profile" is_default_profile="true">
+	    <qos>
+	        <publishMode>
+	            <kind>SYNCHRONOUS</kind>
+	        </publishMode>
+	    </qos>
+	    <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+	</publisher>
+    
+	<subscriber profile_name="ros2_subscription_profile" is_default_profile="true"> 
+	    <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy> 
+	</subscriber> 
+	
+    <data_writer profile_name="data_writer_min_samples"> 
+    	<qos>
+	    	<reliability>
+	        	<kind>BEST_EFFORT</kind>
+	     	</reliability>    	
+    	</qos>
+        <topic> 
+            <historyQos> 
+                <kind>KEEP_LAST</kind> 
+                <depth>1</depth> 
+            </historyQos> 
+	            <resourceLimitsQos>
+	                <max_samples>1</max_samples>
+	                <max_instances>1</max_instances>
+	                <max_samples_per_instance>1</max_samples_per_instance>
+	                <allocated_samples>0</allocated_samples>
+	            </resourceLimitsQos> 
+        </topic> 
+    </data_writer> 
+
+    <data_reader profile_name="data_reader_min_samples">
+    	<qos>
+	    	<reliability>
+	        	<kind>BEST_EFFORT</kind>
+	     	</reliability>    	
+    	</qos> 
+        <topic> 
+            <historyQos> 
+                <kind>KEEP_LAST</kind> 
+                <depth>1</depth> 
+            </historyQos> 
+            <resourceLimitsQos> 
+                <max_samples>1</max_samples>
+                <max_instances>1</max_instances>
+                <max_samples_per_instance>1</max_samples_per_instance>
+                <allocated_samples>0</allocated_samples>
+            </resourceLimitsQos> 
+        </topic> 
+    </data_reader> 
+</profiles>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+
+	<participant profile_name="default_participant_profile_ros2" is_default_profile="true">
+        <rtps>
+            <name>default_profile_for_ros2_context</name>
+        </rtps>
+    </participant>
+    
+    <publisher profile_name="default_publisher" is_default_profile="true">
+   	    <qos>
+   	        <publishMode>
+   	            <kind>ASYNCHRONOUS</kind>
+   	        </publishMode>
+   	    </qos>
+   	    <!-- For ROS 2, this needs to be DYNAMIC all the time, see
+   	    https://docs.ros.org/en/galactic/Tutorials/Advanced/FastDDS-Configuration.html#rmw-fastrtps-use-qos-from-xml  -->
+   	    <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+   	</publisher>
+	<!-- the profile name needs to match the actual ROS 2 topic name 
+	https://fast-dds.docs.eprosima.com/en/v2.3.1/fastdds/ros2/ros2_configure.html#creating-publishers-subscribers-with-different-profiles-->
+    <publisher profile_name="rt/large_msg">
+	    <qos>
+	        <publishMode>
+	            <kind>ASYNCHRONOUS</kind>
+	        </publishMode>
+	    </qos>
+	    <!-- For ROS 2, this needs to be DYNAMIC all the time, see
+	    https://docs.ros.org/en/galactic/Tutorials/Advanced/FastDDS-Configuration.html#rmw-fastrtps-use-qos-from-xml  -->
+	    <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+	</publisher>
+    
+	<!-- the profile name needs to match the actual ROS 2 topic name 
+	https://fast-dds.docs.eprosima.com/en/v2.3.1/fastdds/ros2/ros2_configure.html#creating-publishers-subscribers-with-different-profiles-->
+	<subscriber profile_name="rt/large_msg" is_default_profile="true"> 
+	    <!-- For ROS 2, this needs to be DYNAMIC all the time, see
+	    https://docs.ros.org/en/galactic/Tutorials/Advanced/FastDDS-Configuration.html#rmw-fastrtps-use-qos-from-xml -->
+	    <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy> 
+	</subscriber> 
+	
+	
+    <data_writer profile_name="data_writer_min_samples"> 
+    	<qos>
+	    	<reliability>
+	        	<kind>BEST_EFFORT</kind>
+	     	</reliability>    	
+    	</qos>
+        <topic> 
+            <historyQos> 
+                <kind>KEEP_LAST</kind> 
+                <depth>1</depth> 
+            </historyQos> 
+	            <resourceLimitsQos>
+	                <max_samples>1</max_samples>
+	                <max_instances>1</max_instances>
+	                <max_samples_per_instance>1</max_samples_per_instance>
+	                <allocated_samples>0</allocated_samples>
+	            </resourceLimitsQos> 
+        </topic> 
+    </data_writer> 
+
+    <data_reader profile_name="data_reader_min_samples">
+    	<qos>
+	    	<reliability>
+	        	<kind>BEST_EFFORT</kind>
+	     	</reliability>    	
+    	</qos> 
+        <topic> 
+            <historyQos> 
+                <kind>KEEP_LAST</kind> 
+                <depth>1</depth> 
+            </historyQos> 
+            <resourceLimitsQos> 
+                <max_samples>1</max_samples>
+                <max_instances>1</max_instances>
+                <max_samples_per_instance>1</max_samples_per_instance>
+                <allocated_samples>0</allocated_samples>
+            </resourceLimitsQos> 
+        </topic> 
+    </data_reader> 
+</profiles>

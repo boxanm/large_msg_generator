@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles" >
+    <transport_descriptors>         
+        <transport_descriptor> 
+        	<transport_id>TcpTransport</transport_id> 
+        	<type>TCPv4</type> 
+            <!-- <sendBufferSize>9216</sendBufferSize> -->
+            <!-- <receiveBufferSize>9216</receiveBufferSize> -->
+            <!-- <maxMessageSize>9000</maxMessageSize> -->
+            <TTL>255</TTL>
+            <listening_ports> 
+            	<port>5500</port> 
+            </listening_ports> 
+        	<!-- Wide area network, not something we need -->
+        	<!-- <wan_addr></wan_addr> -->
+        </transport_descriptor> 
+    </transport_descriptors> 
+    
+    <participant profile_name="tcp_transport_profile" is_default_profile="true">
+        <rtps>
+            <userTransports> 
+                <transport_id>TcpTransport</transport_id> 
+            </userTransports> 
+           	<name>profile_for_ros2_node</name>
+            <useBuiltinTransports>false</useBuiltinTransports> 
+            <builtin>
+			    <initialPeersList>
+			        <locator>
+			            <tcpv4>
+			                <address>192.168.55.136</address> 
+			                <address>127.0.0.1</address>
+			                <physical_port>5500</physical_port>
+			            </tcpv4>
+			        </locator>
+			    </initialPeersList>
+			</builtin>
+        </rtps>
+    </participant>
+
+    <publisher profile_name="ros2_publisher_profile" is_default_profile="true">
+        <qos>
+            <publishMode>
+                <kind>SYNCHRONOUS</kind>
+            </publishMode>
+        </qos>
+        <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+    </publisher>
+
+    <subscriber profile_name="ros2_subscription_profile" is_default_profile="true">
+        <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+    </subscriber>
+
+    <data_writer profile_name="writer_xml_conf_reliability_profile">
+        <qos>
+            <reliability>
+                <kind>RELIABLE</kind>
+                <max_blocking_time>
+                    <sec>1</sec>
+                </max_blocking_time>
+            </reliability>
+         </qos>
+     </data_writer>
+     
+     <data_reader profile_name="reader_xml_conf_reliability_profile">
+         <qos>
+             <reliability>
+                 <kind>RELIABLE</kind>
+             </reliability>
+         </qos>
+     </data_reader>
+</profiles>

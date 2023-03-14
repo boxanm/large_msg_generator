@@ -36,7 +36,7 @@ public:
 		// publishers.
 		// Note that not all publishers on the same topic with the same type will be compatible:
 		// they must have compatible Quality of Service policies.
-		sub_ = create_subscription<sensor_msgs::msg::PointCloud2>("large_msg", 10, callback);
+		sub_ = create_subscription<sensor_msgs::msg::PointCloud2>("large_msg", rclcpp::SystemDefaultsQoS(), callback);
 	}
 
 private:
