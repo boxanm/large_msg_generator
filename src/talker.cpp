@@ -23,7 +23,8 @@ public:
 		const int rate = this->get_parameter("rate").get_parameter_value().get<int>();
 		const int timer_period = std::ceil(1000/rate);
 		const int num_points_root = std::floor(std::sqrt(num_points));
-		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", 2);
+
+		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", rclcpp::SystemDefaultsQoS());
 		ptcloud_ = sensor_msgs::msg::PointCloud2();
 		ptcloud_.header.frame_id = "map";
 		ptcloud_.height = 1;
