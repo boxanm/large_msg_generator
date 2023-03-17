@@ -4,8 +4,49 @@
 #include <chrono>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
+#include <std_msgs/msg/string.hpp>
 
 using namespace std::chrono_literals;
+
+//in /opt/ros/humble/include/rmw/rmw/qos_profiles.h
+//static const rmw_qos_profile_t rmw_qos_profile_system_default =
+//	{
+//		RMW_QOS_POLICY_HISTORY_SYSTEM_DEFAULT,
+//		RMW_QOS_POLICY_DEPTH_SYSTEM_DEFAULT,
+//		RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT,
+//		RMW_QOS_POLICY_DURABILITY_SYSTEM_DEFAULT,
+//		RMW_QOS_DEADLINE_DEFAULT,
+//		RMW_QOS_LIFESPAN_DEFAULT,
+//		RMW_QOS_POLICY_LIVELINESS_SYSTEM_DEFAULT,
+//		RMW_QOS_LIVELINESS_LEASE_DURATION_DEFAULT,
+//		false
+//	};
+
+static const rmw_qos_profile_t rcl_qos_profile_sensor_data =
+	{
+		RMW_QOS_POLICY_HISTORY_KEEP_LAST,
+		100,
+		RMW_QOS_POLICY_RELIABILITY_RELIABLE,
+		RMW_QOS_POLICY_DURABILITY_VOLATILE,
+		RMW_QOS_DEADLINE_DEFAULT,
+		{0, 500000000}, // half a second
+		RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC,
+		RMW_QOS_LIVELINESS_LEASE_DURATION_DEFAULT,
+		false
+	};
+
+static const rmw_qos_profile_t rcl_qos_profile_big_data =
+	{
+		RMW_QOS_POLICY_HISTORY_KEEP_LAST,
+		1,
+		RMW_QOS_POLICY_RELIABILITY_RELIABLE,
+		RMW_QOS_POLICY_DURABILITY_VOLATILE,
+		RMW_QOS_DEADLINE_DEFAULT,
+		{10, 0},
+		RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC,
+		RMW_QOS_LIVELINESS_LEASE_DURATION_DEFAULT,
+		false
+	};
 
 template <typename T>
 union word_union {
@@ -24,7 +65,9 @@ public:
 		const int timer_period = std::ceil(1000/rate);
 		const int num_points_root = std::floor(std::sqrt(num_points));
 
-		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", rclcpp::SystemDefaultsQoS());
+//		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", 10);
+		auto qos = rclcpp::QoS(rclcpp::KeepLast(1000), rcl_qos_profile_big_data);
+		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", qos);
 		ptcloud_ = sensor_msgs::msg::PointCloud2();
 		ptcloud_.header.frame_id = "map";
 		ptcloud_.height = 1;
@@ -99,6 +142,14 @@ private:
 	rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr path_publisher_;
 	rclcpp::TimerBase::SharedPtr timer_;
 	sensor_msgs::msg::PointCloud2 ptcloud_;
+
+//	void verifyQoS() {
+//		// Create a publisher within a node with specific topic, type support, options, and QoS
+//		rmw_publisher_t* rmw_publisher = rmw_create_publisher(this, std_msgs::msg::String, "test_topic", rclcpp::SystemDefaultsQoS(), rmw_publisher_options_t.new());
+//	// Check the actual QoS set on the publisher
+//		rmw_qos_profile_t qos;
+//		rmw_publisher_get_actual_qos(rmw_publisher, &qos);
+//	}
 
 	void publishLargeMsg() {
 		ptcloud_.header.stamp = this->get_clock()->now();

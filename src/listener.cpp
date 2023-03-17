@@ -18,6 +18,20 @@
 #include "rclcpp/rclcpp.hpp"
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
+
+static const rmw_qos_profile_t rcl_qos_profile_big_data =
+	{
+		RMW_QOS_POLICY_HISTORY_KEEP_LAST,
+		1,
+		RMW_QOS_POLICY_RELIABILITY_RELIABLE,
+		RMW_QOS_POLICY_DURABILITY_VOLATILE,
+		RMW_QOS_DEADLINE_DEFAULT,
+		{10, 0},
+		RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC,
+		RMW_QOS_LIVELINESS_LEASE_DURATION_DEFAULT,
+		false
+	};
+
 class LargeMsgGeneratorListener : public rclcpp::Node
 {
 public:
@@ -36,7 +50,8 @@ public:
 		// publishers.
 		// Note that not all publishers on the same topic with the same type will be compatible:
 		// they must have compatible Quality of Service policies.
-		sub_ = create_subscription<sensor_msgs::msg::PointCloud2>("large_msg", rclcpp::SystemDefaultsQoS(), callback);
+		auto qos = rclcpp::QoS(rclcpp::KeepLast(1000), rcl_qos_profile_big_data);
+		sub_ = create_subscription<sensor_msgs::msg::PointCloud2>("large_msg", qos, callback);
 	}
 
 private:
