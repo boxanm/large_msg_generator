@@ -18,4 +18,23 @@
             <prefix>72.61.73.70.66.61.72.6d.74.65.73.74</prefix>
         </rtps>
     </participant>
+
+    <publisher profile_name="default_publisher" is_default_profile="true">
+        <qos>
+            <publishMode>
+                <kind>ASYNCHRONOUS</kind>
+            </publishMode>
+        </qos>
+        <!-- For ROS 2, this needs to be DYNAMIC all the time, see
+        https://docs.ros.org/en/galactic/Tutorials/Advanced/FastDDS-Configuration.html#rmw-fastrtps-use-qos-from-xml  -->
+        <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+    </publisher>
+
+    <!-- the profile name needs to match the actual ROS 2 topic name
+    https://fast-dds.docs.eprosima.com/en/v2.3.1/fastdds/ros2/ros2_configure.html#creating-publishers-subscribers-with-different-profiles-->
+    <subscriber profile_name="default_subscriber" is_default_profile="true">
+        <!-- For ROS 2, this needs to be DYNAMIC all the time, see
+        https://docs.ros.org/en/galactic/Tutorials/Advanced/FastDDS-Configuration.html#rmw-fastrtps-use-qos-from-xml -->
+        <historyMemoryPolicy>DYNAMIC</historyMemoryPolicy>
+    </subscriber>
 </profiles>
