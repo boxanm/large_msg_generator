@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+    <participant profile_name="UDP CLIENT" is_default_profile="true">
+        <rtps>
+            <builtin>
+                <discovery_config>
+                    <discoveryProtocol>CLIENT</discoveryProtocol>
+                    <discoveryServersList>
+                        <RemoteServer prefix="72.61.73.70.66.61.72.6d.74.65.73.74">
+                            <metatrafficUnicastLocatorList>
+                                <locator>
+                                    <udpv4>
+                                        <address>192.168.55.101</address>
+                                        <port>56542</port>
+                                    </udpv4>
+                                </locator>
+                            </metatrafficUnicastLocatorList>
+                            <metatrafficMulticastLocatorList>
+                                <locator>
+                                    <udpv4>
+                                        <address>192.168.55.156</address>
+                                        <port>24565</port>
+                                    </udpv4>
+                                </locator>
+                            </metatrafficMulticastLocatorList>
+                        </RemoteServer>
+                    </discoveryServersList>
+                </discovery_config>
+            </builtin>
+        </rtps>
+    </participant>
+</profiles>
