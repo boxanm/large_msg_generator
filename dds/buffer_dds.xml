@@ -2,20 +2,8 @@
 <profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
     <participant profile_name="UDP SERVER" is_default_profile="true">
         <rtps>
-            <builtin>
-                <discovery_config>
-                    <discoveryProtocol>SERVER</discoveryProtocol>
-                </discovery_config>
-                <metatrafficUnicastLocatorList>
-                    <locator>
-                        <udpv4>
-                            <address>192.168.55.101</address>
-                            <port>56542</port>
-                        </udpv4>
-                    </locator>
-                </metatrafficUnicastLocatorList>
-            </builtin>
-            <prefix>72.61.73.70.66.61.72.6d.74.65.73.74</prefix>
+            <sendSocketBufferSize>1048576</sendSocketBufferSize>
+            <listenSocketBufferSize>4194304</listenSocketBufferSize>
         </rtps>
     </participant>
 
