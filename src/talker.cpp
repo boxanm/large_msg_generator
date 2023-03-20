@@ -65,9 +65,9 @@ public:
 		const int timer_period = std::ceil(1000/rate);
 		const int num_points_root = std::floor(std::sqrt(num_points));
 
-//		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", 10);
-		auto qos = rclcpp::QoS(rclcpp::KeepLast(1000), rcl_qos_profile_big_data);
-		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", qos);
+		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", rclcpp::SystemDefaultsQoS());
+//		auto qos = rclcpp::QoS(rclcpp::KeepLast(1000), rcl_qos_profile_big_data);
+//		path_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("large_msg", qos);
 		ptcloud_ = sensor_msgs::msg::PointCloud2();
 		ptcloud_.header.frame_id = "map";
 		ptcloud_.height = 1;

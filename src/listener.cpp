@@ -50,8 +50,10 @@ public:
 		// publishers.
 		// Note that not all publishers on the same topic with the same type will be compatible:
 		// they must have compatible Quality of Service policies.
-		auto qos = rclcpp::QoS(rclcpp::KeepLast(1000), rcl_qos_profile_big_data);
-		sub_ = create_subscription<sensor_msgs::msg::PointCloud2>("large_msg", qos, callback);
+
+//		auto qos = rclcpp::QoS(rclcpp::KeepLast(1000), rcl_qos_profile_big_data);
+//		sub_ = create_subscription<sensor_msgs::msg::PointCloud2>("large_msg", qos, callback);
+		sub_ = create_subscription<sensor_msgs::msg::PointCloud2>("large_msg", rclcpp::SystemDefaultsQoS(), callback);
 	}
 
 private:
